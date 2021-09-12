@@ -80,7 +80,7 @@ $(document).ready(function () {
     }
     }
             } else {
-            $('#error').html('ERROR: Your guess must be a number between 1 and 100');
+            $('#error').html('ERROR: Your guess must be a number between 0 and 100');
             }
             $('#newgame').click(function (e) {
                 e.preventDefault();
