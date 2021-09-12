@@ -1,100 +1,132 @@
-$(document).ready(function () {
+alert(`Welcome player! Click ${'OK'} to play the game.`);
 
-    $('#guess').focus(function () {
-        if ($(this).val() == $(this).attr("value")) {
-            $(this).val("");
-        }
-    }).blur(function () {
-        if ($(this).val() === "") {
-            $(this).val($(this).attr("value"));
-        }
+const boxes = document.querySelectorAll('.box');
+const text = document.querySelector('#heading');
+const strategy = document.querySelector('#strategy');
+const restartBtn = document.querySelector('#restart');
+
+// Create function drawBoard which will: 
+// Add a bottom border to the elements whose indexes are less than 3. 
+// A right border will be added to those elements which are completely divisible by 3(index position 3, 6). 
+// The function will add a left border to those elements which give a modulus of 2(index position 2, 5, 8) 
+// And a top border will be added to all the elements that have an index position greater than 5. 
+// When a box meets a condition, the CSS style is added using the box.style.
+// The styles are stored inside the styleString variable
+const drawBoard = () => {
+    boxes.forEach((box, i) => {
+      var styleString = '';
+      if (i < 3) {
+        styleString += 'border-bottom: 3px solid var(--text);';
+      }
+      if (i % 3 === 0) {
+        styleString += 'border-right: 3px solid var(--text);';
+      }
+      if (i % 3 === 2) {
+        styleString += 'border-left: 3px solid var(--text);';
+      }
+      if (i > 5) {
+        styleString += 'border-top: 3px solid var(--text);';
+      }
+      box.style = styleString;
+
+      //
+      box.addEventListener('click', boxClicked);
     });
-    
-    
-        //Incipient Variables
-    
-        const answer = Math.floor((Math.random() * 100) + 1);
-        console.log("The secret number is: " + answer);
-        let numberOfGuesses = 0;
-        let guesses = [];
-        guesses.length = 0;
-        let distance = null;
-        let previousDistance = null;
-    
-        function getGuess() {
-            $("#submit").click(game);
-            $("#guess").keydown(function (enter) {
-                if (enter.keyCode == 13) {
-                    game();
-                }
-            });
-        }
-    
-        getGuess();
-    
-        function game() {
-            var guess = parseInt($('#guess').val());
-            if (guess !== null && $.isNumeric(guess) && (guess < 101) && (guess > 0)) {
-                $('#guess').val('Guess a number...');
-                numberOfGuesses += 1;
-                if ($.inArray(guess,guesses) > -1) {
-                     $('body').css("background-color", "#222");
-                     $('#error').html('ERROR: You guessed that number already. Please try a new number.');
-              } else {
-                guesses.push(guess);
-                distance = Math.abs(answer - guess);
-                previousDistance = Math.abs(answer - guesses[guesses.length - 2]);
-                $('#error').html('');
-                if (guess === answer) {
-                    $('body').css("background-color", "#CC0000");
-                    $('#hint').html('Congrats! You got it in ' + numberOfGuesses + ' guesses! The secret number was ' + answer +"!");
-                } else {
-                    if (isNaN(previousDistance)) {
-                        if (guess > answer) {
-                            $('#hint').html('Guess lower! Last guess: ' + guess);
-                        } else if (guess < answer) {
-                            $('#hint').html('Guess higher! Last guess: ' + guess);
-                        }
-    
-                    } else if (distance > previousDistance) {
-                        $('body').css("background-color", "#3399FF");
-                        if (guess > answer) {
-                            $('#hint').html('You\'re getting colder, guess LOWER! Last guess: ' + guess);
-                        } else if (guess < answer) {
-                            $('#hint').html('You\'re getting colder, guess HIGHER! Last guess: ' + guess);
-                        }
-                    } else if (distance < previousDistance) {
-                        $('body').css("background-color", "#CC0000");
-                        if (guess > answer) {
-                            $('#hint').html('You\'re getting hotter, guess LOWER! Last guess: ' + guess);
-                        } else if (guess < answer) {
-                            $('#hint').html('You\'re getting hotter, guess HIGHER! Last guess: ' + guess);
-                        }
-                    } else if (distance === previousDistance) {
-                        if (guess > answer) {
-                            $('#hint').html('You\'re on fire, guess LOWER! Last guess: ' + guess);
-                        } else if (guess < answer) {
-                            $('#hint').html('You\'re on fire, guess HIGHER! Last guess: ' + guess);
-                        }
-    } 
+  };
+
+  const spaces = [];
+const tick_circle = 'O';
+const tick_x = 'X';
+let currentPlayer = tick_circle;
+
+
+const boxClicked = (e) => {
+    const id = e.target.id;
+    if (!spaces[id]) {
+      spaces[id] = currentPlayer;
+      e.target.innerText = currentPlayer;
+  
+      if (playerWon()) {
+        text.innerText = `${currentPlayer} has won!`;
+        restart();
+        return;
+      }
+  
+      if (playerDraw()) {
+        return;
+      }
+      currentPlayer = currentPlayer === tick_circle ? tick_x : tick_circle;
     }
+  };
+
+  const playerWon = () => {
+    if (spaces[0] === currentPlayer) {
+      if (spaces[1] === currentPlayer && spaces[2] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins up to top`;
+        return true;
+      }
+      if (spaces[3] === currentPlayer && spaces[6] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins on the left`;
+        return true;
+      }
+      if (spaces[4] === currentPlayer && spaces[8] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins diagonally`;
+        return true;
+      }
     }
-            } else {
-            $('#error').html('ERROR: Your guess must be a number between 0 and 100');
-            }
-            $('#newgame').click(function (e) {
-                e.preventDefault();
-                $('body').css("background-color", "#222");
-                answer = Math.floor((Math.random() * 100) + 1);
-                console.log("The secret number is: " + answer);
-                numberOfGuesses = 0;
-                guesses.length = 0;
-                distance = null;
-                previousDistance = null;
-                $('#hint').html('');
-                $('#error').html('');
-                $('#guess').val('Guess a number...');
-            });
-        }
-        });
-    
+    if (spaces[8] === currentPlayer) {
+      if (spaces[2] === currentPlayer && spaces[5] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins on the right`;
+        return true;
+      }
+      if (spaces[6] === currentPlayer && spaces[7] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins on the bottom`;
+        return true;
+      }
+    }
+    if (spaces[4] === currentPlayer) {
+      if (spaces[1] === currentPlayer && spaces[7] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins vertically on middle`;
+        return true;
+      }
+      if (spaces[3] === currentPlayer && spaces[5] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins horizontally on the middle`;
+        return true;
+      }
+      if (spaces[2] === currentPlayer && spaces[6] === currentPlayer) {
+        strategy.innerText = `${currentPlayer} wins diagonally`;
+        return true;
+      }
+    }
+  };
+
+// The draw function satisfies the condition that:
+//  If all the boxes are filled and no winning condition satisfies, then the match is a draw. 
+  const playerDraw = () => {
+    var draw = 0;
+    spaces.forEach((space, i) => {
+      if (spaces[i] !== null) draw++;
+    });
+    if (draw === 9) {
+      text.innerText = `Draw`;
+      restart();
+    }
+  };
+
+  const restart = () => {
+    setTimeout(() => {
+      spaces.forEach((space, i) => {
+        spaces[i] = null;
+      });
+      boxes.forEach((box) => {
+        box.innerText = '';
+      });
+      text.innerText = `Play`;
+      strategy.innerText = ``;
+    }, 9000);
+  };
+
+  // Adds event listener
+  restartBtn.addEventListener('click', restart);
+restart();
+drawBoard();

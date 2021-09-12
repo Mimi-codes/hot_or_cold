@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<link href="style.css" type="text/css" rel="stylesheet">
-<title>Hot or Cold</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="./style.css">   
+
+<!--Bootstrap-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css">
+
+    <title>Tic-Tac-Toe</title>
 </head>
 <body>
-  <div id="wrapper">
-     <h1><span class="hot">Hot</span> or <span class="cold">Cold</span></h1>
-<h3>Guess the secret number by entering an integer between 0 and 100</h3>
+    <div class="container">
+                 
+        <h1 id="heading">Play</h1>               
+        <h2 id="strategy"></h2>
+        <button id="restart">Restart</button>
+                
+        <div id="board">                      
+           <div class="box" id="0"></div>                     
+           <div class="box" id="1"></div>                        
+           <div class="box" id="2"></div>                        
+           <div class="box" id="3"></div>                        
+           <div class="box" id="4"></div>                        
+           <div class="box" id="5"></div>                        
+           <div class="box" id="6"></div>                        
+           <div class="box" id="7"></div>                        
+           <div class="box" id="8"></div>                    
+        </div>
+            
+     </div>
 
-    <ul>
-        <li id="hint"></li>
-        <li id="error"></li>
-        <li><input type="text" name="guess" id="guess" value="Guess a number..." maxlength="3" autocomplete="off"></li>
-        <li><input type="submit" name="submit" id="submit" class="button" value="Submit"></li>
-        <button name="newgame" id="newgame" class="button">New Game</button>
-
-    </ul>
-    
-</div>
-<!--wrapper-->
-<script src="app.js"></script>
-
+    <script src="./app.js"></script>
 </body>
 </html>
-
-
-
